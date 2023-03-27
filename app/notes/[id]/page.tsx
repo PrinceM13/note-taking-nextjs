@@ -10,7 +10,7 @@ export default async function NotePage({ params }: any) {
   const note = await getNote(params.id);
   return (
     <div>
-      <h1>note: {params.id}</h1>
+      <h1>Note: {params.id}</h1>
       <div className={styles.note}>
         <h2>{note.title}</h2>
         <h5>{note.content}</h5>
