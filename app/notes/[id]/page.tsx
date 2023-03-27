@@ -1,8 +1,14 @@
 import styles from "../Notes.module.css";
 
 const getNote = async (noteId: string) => {
-  const res = await fetch(`http://127.0.0.1:8090/api/collections/notes/records/${noteId}`);
-  const data = await res.json();
+  type DataItem = {
+    id: number;
+    title: string;
+    content: string;
+    created: string;
+  };
+
+  const data: DataItem = { id: 999, title: "test", content: "work please", created: "2023" };
   return data;
 };
 
