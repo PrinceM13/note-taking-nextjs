@@ -1,12 +1,21 @@
+import { DB_GOOGLE_SHEET, DB_POCKETBASE, SELECTED_DATABASE } from "@/config/constant";
 import Link from "next/link";
 import styles from "./Notes.module.css";
 
 const getNotes = async () => {
-  const res = await fetch("http://127.0.0.1:8090/api/collections/notes/records", {
-    cache: "no-store"
-  });
-  const data = await res.json();
-  return data?.items as any[];
+  if (SELECTED_DATABASE === DB_POCKETBASE) {
+    const res = await fetch("http://127.0.0.1:8090/api/collections/notes/records", {
+      cache: "no-store"
+    });
+    const data = await res.json();
+    return data?.items as any[];
+  } else if (SELECTED_DATABASE === DB_GOOGLE_SHEET) {
+    const res = await fetch("http://localhost:3219/api/google-sheet", {
+      cache: "no-store"
+    });
+    const data = await res.json();
+    return data as any[];
+  }
 };
 
 export default async function NotesPage() {
