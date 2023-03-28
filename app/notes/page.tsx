@@ -2,6 +2,7 @@ import { DB_GOOGLE_SHEET, SELECTED_DATABASE } from "@/config/constant";
 import Link from "next/link";
 import styles from "./Notes.module.css";
 import { google } from "googleapis";
+import AddNote from "@/components/input/AddNote";
 
 type GoogleCredentials = {
   type: string;
@@ -31,35 +32,26 @@ const getNotes = async () => {
       client_x509_cert_url: process.env.CLIENT_X509_CERT_URL || ""
     };
 
-    if (true) {
-      const auth = await google.auth.getClient({
-        credentials,
-        scopes: ["https://www.googleapis.com/auth/spreadsheets"]
-      });
-      const googleSheet = google.sheets({ version: "v4", auth });
-      const range = `Sheet1!A:C`;
-      const res = await googleSheet.spreadsheets.values.get({
-        spreadsheetId: process.env.SHEET_ID,
-        range
-      });
+    const auth = await google.auth.getClient({
+      credentials,
+      scopes: ["https://www.googleapis.com/auth/spreadsheets"]
+    });
+    const googleSheet = google.sheets({ version: "v4", auth });
+    const range = `notes!A:C`;
+    const res = await googleSheet.spreadsheets.values.get({
+      spreadsheetId: process.env.SHEET_ID,
+      range
+    });
 
-      const columnName = res.data.values?.shift();
-      let tempNotes;
-      if (columnName) {
-        tempNotes = res.data.values?.reduce((acc, el) => {
-          acc.push({ [columnName[0]]: el[0], [columnName[1]]: el[1], [columnName[2]]: el[2] });
-          return acc;
-        }, []);
-      }
-      return tempNotes;
-    } else {
-      // // connect to google sheet through api (work on local but not work on vercel)
-      // const res = await fetch("http://localhost:3219/api/google-sheet", {
-      //   cache: "no-store"
-      // });
-      // const data = await res.json();
-      // return data as any[];
+    const columnName = res.data.values?.shift();
+    let tempNotes;
+    if (columnName) {
+      tempNotes = res.data.values?.reduce((acc, el) => {
+        acc.push({ [columnName[0]]: el[0], [columnName[1]]: el[1], [columnName[2]]: el[2] });
+        return acc;
+      }, []);
     }
+    return tempNotes;
   }
 };
 
@@ -67,7 +59,10 @@ export default async function NotesPage() {
   const notes = await getNotes();
   return (
     <div>
-      <h1>Notes</h1>
+      <div>
+        <h1>Notes</h1>
+        <AddNote />
+      </div>
       <div className={styles.grid}>
         {notes?.map((note) => (
           <Note key={note.id} note={note} />
