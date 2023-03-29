@@ -22,11 +22,16 @@ export default function AddNote() {
   };
 
   const handleClick = async () => {
-    const res = await axios.post("http://localhost:3219/api/google-sheet", {
-      title: "mmm",
-      content: "nnn"
+    const updateRes = await axios.put("http://localhost:3219/api/google-sheet/counter");
+
+    await axios.post("http://localhost:3219/api/google-sheet", {
+      id: updateRes.data,
+      title: newNote.title,
+      content: newNote.content
     });
-    console.log(res.data);
+
+    // clear conditon
+    setNewNote(initialNote);
   };
 
   return (

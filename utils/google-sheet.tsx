@@ -1,5 +1,7 @@
 import { googleSheet } from "../config/google";
 
+// notes sheet ---------------------------------------------------------------------------------
+
 const range = `notes!A:C`;
 const spreadsheetId = process.env.SHEET_ID;
 
@@ -19,7 +21,13 @@ export const getNotes = async () => {
   return tempNotes;
 };
 
-export const addNote = async () => {
+type Note = {
+  id: number;
+  title: string;
+  content: string;
+};
+
+export const addNote = async ({ id, title, content }: Note) => {
   const googleSheetInstance = await googleSheet();
   const valueInputOption = "USER_ENTERED";
 
@@ -28,7 +36,44 @@ export const addNote = async () => {
     range,
     valueInputOption,
     requestBody: {
-      values: [["id", "title", "content"]]
+      values: [[id, title, content]]
     }
   });
+};
+
+// config sheet --------------------------------------------------------------------------------
+
+const counterRange = `config!B1`;
+
+export const getCounter = async () => {
+  const googleSheetInstance = await googleSheet();
+  const res = await googleSheetInstance.spreadsheets.values.get({
+    spreadsheetId,
+    range: counterRange
+  });
+
+  let counter: number = 0;
+  if (res.data.values) {
+    counter = Number(res.data.values[0]);
+  }
+
+  return counter;
+};
+
+export const counterUp = async () => {
+  const googleSheetInstance = await googleSheet();
+  const valueInputOption = "USER_ENTERED";
+  const currentCounter: number = await getCounter();
+  const newCounter: number = currentCounter + 1;
+
+  await googleSheetInstance.spreadsheets.values.update({
+    spreadsheetId,
+    range: counterRange,
+    valueInputOption,
+    requestBody: {
+      values: [[newCounter]]
+    }
+  });
+
+  return newCounter;
 };

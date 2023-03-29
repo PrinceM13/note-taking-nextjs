@@ -1,7 +1,7 @@
 import { addNote } from "../../../utils/google-sheet";
 
 export async function POST(request: Request) {
-  console.log("-------> ", await request.json());
-  addNote();
-  return new Response("xxx");
+  const body = await request.json();
+  await addNote(body);
+  return new Response("note created !");
 }
