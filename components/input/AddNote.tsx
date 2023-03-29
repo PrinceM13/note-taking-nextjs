@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import axios from "axios";
 
 import Button from "./Button";
 import InputBox from "./InputBox";
@@ -20,13 +21,21 @@ export default function AddNote() {
     setNewNote({ ...newNote, [e.target.name]: e.target.value });
   };
 
+  const handleClick = async () => {
+    const res = await axios.post("http://localhost:3219/api/google-sheet", {
+      title: "mmm",
+      content: "nnn"
+    });
+    console.log(res.data);
+  };
+
   return (
     <div>
       <label>title:</label>
       <InputBox value={newNote.title} name="title" onChange={handleInput} />
       <label>content:</label>
       <TextBox value={newNote.content} name="content" onChange={handleInput} />
-      <Button>Add</Button>
+      <Button onClick={handleClick}>Add</Button>
     </div>
   );
 }

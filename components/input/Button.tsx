@@ -1,5 +1,5 @@
-type ButtonProps = { children: string };
+type ButtonProps = { children: string; onClick: () => any };
 
-export default function Button({ children }: ButtonProps) {
-  return <button>{children}</button>;
+export default function Button({ children, onClick }: ButtonProps) {
+  return <button onClick={onClick}>{children}</button>;
 }

@@ -5,6 +5,7 @@ import { getNotes } from "../../utils/google-sheet";
 
 export default async function NotesPage() {
   const notes = await getNotes();
+
   return (
     <div>
       <div>
