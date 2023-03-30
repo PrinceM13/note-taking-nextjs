@@ -13,6 +13,7 @@ type Note = {
 };
 
 const initialNote: Note = { title: "", content: "" };
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function AddNote() {
   const [newNote, setNewNote] = useState(initialNote);
@@ -22,9 +23,9 @@ export default function AddNote() {
   };
 
   const handleClick = async () => {
-    const updateRes = await axios.put("http://localhost:3219/api/google-sheet/counter");
+    const updateRes = await axios.put(`${API_URL}/google-sheet/counter`);
 
-    await axios.post("http://localhost:3219/api/google-sheet", {
+    await axios.post(`${API_URL}/google-sheet`, {
       id: updateRes.data,
       title: newNote.title,
       content: newNote.content
