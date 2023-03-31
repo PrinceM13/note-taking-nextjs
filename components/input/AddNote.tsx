@@ -15,14 +15,18 @@ type Note = {
 const initialNote: Note = { title: "", content: "" };
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export default function AddNote() {
+type AddNoteProps = { onAddNote: () => any };
+
+export default function AddNote({ onAddNote }: AddNoteProps) {
   const [newNote, setNewNote] = useState(initialNote);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleInput = (e: any) => {
     setNewNote({ ...newNote, [e.target.name]: e.target.value });
   };
 
   const handleClick = async () => {
+    setIsUploading(true);
     const updateRes = await axios.put(`${API_URL}/google-sheet/counter`);
 
     await axios.post(`${API_URL}/google-sheet`, {
@@ -31,8 +35,12 @@ export default function AddNote() {
       content: newNote.content
     });
 
+    // to update NotesPage
+    onAddNote();
+
     // clear conditon
     setNewNote(initialNote);
+    setIsUploading(false);
   };
 
   return (
@@ -42,6 +50,7 @@ export default function AddNote() {
       <label>content:</label>
       <TextBox value={newNote.content} name="content" onChange={handleInput} />
       <Button onClick={handleClick}>Add</Button>
+      {isUploading && <p>Adding new note...</p>}
     </div>
   );
 }
