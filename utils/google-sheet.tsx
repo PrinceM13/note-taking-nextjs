@@ -5,20 +5,62 @@ import { googleSheet } from "../config/google";
 const range = `notes!A:C`;
 const spreadsheetId = process.env.SHEET_ID;
 
+export const getIds = async () => {
+  const googleSheetInstance = await googleSheet();
+  const res = await googleSheetInstance.spreadsheets.values.get({
+    spreadsheetId,
+    range: "notes!A:A",
+    majorDimension: "COLUMNS"
+  });
+
+  let ids;
+  if (res.data.values) {
+    ids = res.data.values[0].reduce((acc, el, idx) => {
+      acc[el] = idx;
+      return acc;
+    }, {});
+  }
+
+  return ids;
+};
+
+// array of all notes
 export const getNotes = async () => {
   const googleSheetInstance = await googleSheet();
   const res = await googleSheetInstance.spreadsheets.values.get({ spreadsheetId, range });
   const columnName = res.data.values?.shift();
-  let tempNotes;
+  let notes;
 
   if (columnName) {
-    tempNotes = res.data.values?.reduce((acc, el) => {
+    notes = res.data.values?.reduce((acc, el) => {
       acc.push({ [columnName[0]]: el[0], [columnName[1]]: el[1], [columnName[2]]: el[2] });
       return acc;
     }, []);
   }
 
-  return tempNotes;
+  return notes;
+};
+
+// single note (specific with noteId)
+export const getNote = async (noteId: number) => {
+  const ids = await getIds();
+  const rowNumber = 1 + ids[noteId];
+  const googleSheetInstance = await googleSheet();
+  const res = await googleSheetInstance.spreadsheets.values.get({
+    spreadsheetId,
+    range: `notes!${rowNumber}:${rowNumber}`,
+    majorDimension: "ROWS"
+  });
+  let note;
+  if (res.data.values) {
+    note = {
+      id: res.data.values[0][0],
+      title: res.data.values[0][1],
+      content: res.data.values[0][2]
+    };
+  }
+
+  return note;
 };
 
 type Note = {
