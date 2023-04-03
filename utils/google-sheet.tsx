@@ -51,6 +51,7 @@ export const getNote = async (noteId: number) => {
     range: `notes!${rowNumber}:${rowNumber}`,
     majorDimension: "ROWS"
   });
+
   let note;
   if (res.data.values) {
     note = {

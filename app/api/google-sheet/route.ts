@@ -6,7 +6,7 @@ export async function POST(request: Request) {
   return new Response("note created !");
 }
 
-export async function GET(request: Request) {
+export async function GET() {
   const notes = await getNotes();
   return new Response(JSON.stringify(notes));
 }
