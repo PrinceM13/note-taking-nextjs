@@ -42,14 +42,16 @@ export default function NotesPage() {
         ) : notes.length === 0 ? (
           <p>No note found</p>
         ) : (
-          notes.map((note) => <Note key={note.id} note={note} />)
+          notes.map((note) => (
+            <Note key={note.id} note={note} onDeleteNote={() => setIsNewNote(true)} />
+          ))
         )}
       </div>
     </div>
   );
 }
 
-const Note = ({ note }: any) => {
+const Note = ({ note, onDeleteNote }: any) => {
   const router = useRouter();
   const { id, title, content, created } = note || {};
   const handleClickNote = (id: number) => {
@@ -63,7 +65,7 @@ const Note = ({ note }: any) => {
         <Hr />
         <h5>{content}</h5>
         <Hr />
-        <ToolBar />
+        <ToolBar onDeleteNote={onDeleteNote} id={id} />
       </div>
     </div>
   );

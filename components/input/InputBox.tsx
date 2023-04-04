@@ -5,5 +5,12 @@ type InputBoxProps = {
 };
 
 export default function InputBox({ value, name, onChange }: InputBoxProps) {
-  return <input value={value} name={name} onChange={onChange} />;
+  return (
+    <input
+      style={{ borderRadius: "5px", borderWidth: "1px" }}
+      value={value}
+      name={name}
+      onChange={onChange}
+    />
+  );
 }

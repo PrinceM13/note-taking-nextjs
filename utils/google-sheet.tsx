@@ -84,6 +84,37 @@ export const addNote = async ({ id, title, content }: Note) => {
   });
 };
 
+export const deleteNote = async (noteId: number) => {
+  const ids = await getIds();
+  const rowIndex = ids[noteId];
+  const googleSheetInstance = await googleSheet();
+
+  const res = await googleSheetInstance.spreadsheets.batchUpdate({
+    spreadsheetId,
+    requestBody: {
+      // request body parameters
+      requests: [
+        {
+          deleteDimension: {
+            range: {
+              dimension: "ROWS",
+              startIndex: rowIndex, // API indexes start at 0
+              endIndex: rowIndex + 1 // endIndex is exclusive, so add 1 => delete only 1 row
+            }
+          }
+        }
+      ]
+    }
+  });
+  // // clear data
+  // const res = await googleSheetInstance.spreadsheets.values.batchClear({
+  //   spreadsheetId,
+  //   requestBody: {
+  //     ranges: [`notes!${7}:${7}`]
+  //   }
+  // });
+};
+
 // config sheet --------------------------------------------------------------------------------
 
 const counterRange = `config!B1`;
