@@ -1,10 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import styles from "./Notes.module.css";
 import AddNote from "@/components/input/AddNote";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import ToolBar from "@/components/toolbar/ToolBar";
+import Hr from "@/components/Hr";
+import { useRouter } from "next/navigation";
 
 type Note = {
   id: any;
@@ -48,14 +50,21 @@ export default function NotesPage() {
 }
 
 const Note = ({ note }: any) => {
+  const router = useRouter();
   const { id, title, content, created } = note || {};
+  const handleClickNote = (id: number) => {
+    router.push(`/notes/${id}`);
+  };
+
   return (
-    <Link href={`/notes/${id}`}>
+    <div onClick={() => handleClickNote(id)} className="click">
       <div className={styles.note}>
         <h2>{title}</h2>
+        <Hr />
         <h5>{content}</h5>
-        <p>{created}</p>
+        <Hr />
+        <ToolBar />
       </div>
-    </Link>
+    </div>
   );
 };
