@@ -11,6 +11,16 @@ body {
   padding: 0 2rem;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -49,4 +59,18 @@ nav a {
   font-weight: bold;
   margin: 0 0.5rem;
   text-decoration: underline;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: end;
+  gap: 8px;
+}
+
+.custom-hr {
+  visibility: hidden;
+}
+
+.click {
+  cursor: pointer;
 }
