@@ -15,6 +15,8 @@ type Note = {
   content: string;
 };
 
+const initialNote: Note = { id: 0, title: "", content: "" };
+
 export default function NotesPage() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const [notes, setNotes] = useState<Note[]>([]);
@@ -37,6 +39,8 @@ export default function NotesPage() {
     <>
       <Modal isOpen={isEdit} onClose={() => setIsEdit(false)}>
         <Note
+          idx={selectedNoteIdx}
+          setNotes={setNotes}
           note={notes[selectedNoteIdx]}
           isEdit={isEdit}
           onDoneEditing={() => setIsEdit(false)}
@@ -73,6 +77,7 @@ export default function NotesPage() {
 
 const Note = ({
   idx,
+  setNotes,
   note,
   onDeleteNote,
   onEditNote,
@@ -90,9 +95,7 @@ const Note = ({
 
   const handleOnChange = (e: any) => {
     setNewNote((previous) => ({
-      id: "initial",
-      title: "",
-      content: "",
+      ...initialNote,
       ...previous,
       [e.target.name]: e.target.value
     }));
@@ -105,6 +108,14 @@ const Note = ({
   const handleSeletedNoteToEdit = () => {
     onEditNote();
     setSelectedNoteIdx(idx);
+  };
+
+  const updateNotes = () => {
+    setNotes((previous: Note[]) => {
+      const tempNotes = [...previous];
+      tempNotes[idx] = newNote || initialNote;
+      return tempNotes;
+    });
   };
 
   return (
@@ -130,6 +141,7 @@ const Note = ({
         <ToolBar
           onDeleteNote={onDeleteNote}
           id={id}
+          updateNotes={updateNotes}
           handleSeletedNoteToEdit={handleSeletedNoteToEdit}
           onDoneEditing={onDoneEditing}
           isEdit={isEdit}
