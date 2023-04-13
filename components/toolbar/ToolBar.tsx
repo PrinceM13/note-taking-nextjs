@@ -5,13 +5,19 @@ import EditModalButton from "./EditModalButton";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export default function ToolBar({ onDeleteNote, id, onEditNote, isEdit }: any) {
+export default function ToolBar({
+  onDeleteNote,
+  id,
+  handleSeletedNoteToEdit,
+  onDoneEditing,
+  isEdit
+}: any) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleEditButton = async (e: any) => {
     e.stopPropagation();
     // await axios.patch(`${API_URL}/google-sheet/notes/${id}`, { hi: "hello", planet: "worlds" });
-    onEditNote();
+    handleSeletedNoteToEdit();
 
     // to update NotesPage
     console.log("edit");
@@ -31,11 +37,11 @@ export default function ToolBar({ onDeleteNote, id, onEditNote, isEdit }: any) {
       {isDeleting ? (
         <div style={{ color: "red" }}>Deleting this note...</div>
       ) : isEdit ? (
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "4px" }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
           <EditModalButton onClick={() => {}} color="green">
             Okay
           </EditModalButton>
-          <EditModalButton onClick={() => {}} color="red">
+          <EditModalButton onClick={onDoneEditing} color="red">
             Cancel
           </EditModalButton>
         </div>
