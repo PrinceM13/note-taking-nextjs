@@ -115,6 +115,14 @@ export const deleteNote = async (noteId: number) => {
   // });
 };
 
+export const updateNote = async (noteId: number, body: any) => {
+  console.log(`patch note: ${noteId}`);
+  console.log("body -----> ", body);
+  const ids = await getIds();
+  const rowIndex = ids[noteId];
+  const googleSheetInstance = await googleSheet();
+};
+
 // config sheet --------------------------------------------------------------------------------
 
 const counterRange = `config!B1`;
