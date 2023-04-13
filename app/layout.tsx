@@ -11,9 +11,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <main>
-          <nav>
-            <Link href="/">Home</Link>
-            <Link href="/notes">Notes</Link>
+          <nav style={{ marginBottom: "20px", display: "flex", gap: "10px" }}>
+            <Link href="/" style={{ margin: 0 }}>
+              Home
+            </Link>
+            <Link href="/notes" style={{ margin: 0 }}>
+              Notes
+            </Link>
           </nav>
           {children}
         </main>

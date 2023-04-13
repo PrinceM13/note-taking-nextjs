@@ -48,7 +48,7 @@ export default function NotesPage() {
       </Modal>
       <div>
         <div>
-          <h1>Notes</h1>
+          <h1 style={{ marginBottom: "20px" }}>Notes</h1>
           <AddNote onAddNote={() => setIsNewNote(true)} />
         </div>
         <div className={styles.grid}>

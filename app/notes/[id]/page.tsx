@@ -28,7 +28,7 @@ export default function NotePage({ params }: any) {
 
   return (
     <div>
-      <h1>Note: {params.id}</h1>
+      <h1 style={{ marginBottom: "20px" }}>Note: {params.id}</h1>
       {isLoading ? (
         <div>Loading...</div>
       ) : (
