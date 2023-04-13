@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import ToolBar from "@/components/toolbar/ToolBar";
 import Hr from "@/components/Hr";
 import { useRouter } from "next/navigation";
+import Modal from "@/components/Modal";
 
 type Note = {
   id: any;
@@ -14,11 +15,15 @@ type Note = {
   content: string;
 };
 
+const initialNote: Note = { id: 0, title: "", content: "" };
+
 export default function NotesPage() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const [notes, setNotes] = useState<Note[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isNewNote, setIsNewNote] = useState(true);
+  const [isEdit, setIsEdit] = useState(false);
+  const [selectedNoteIdx, setSelectedNoteIdx] = useState(0);
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -31,41 +36,117 @@ export default function NotesPage() {
   }, [isNewNote]);
 
   return (
-    <div>
+    <>
+      <Modal isOpen={isEdit} onClose={() => setIsEdit(false)}>
+        <Note
+          idx={selectedNoteIdx}
+          setNotes={setNotes}
+          note={notes[selectedNoteIdx]}
+          isEdit={isEdit}
+          onDoneEditing={() => setIsEdit(false)}
+        />
+      </Modal>
       <div>
-        <h1>Notes</h1>
-        <AddNote onAddNote={() => setIsNewNote(true)} />
+        <div>
+          <h1>Notes</h1>
+          <AddNote onAddNote={() => setIsNewNote(true)} />
+        </div>
+        <div className={styles.grid}>
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : notes.length === 0 ? (
+            <p>No note found</p>
+          ) : (
+            notes.map((note, idx) => (
+              <Note
+                key={note.id}
+                idx={idx}
+                note={note}
+                onDeleteNote={() => setIsNewNote(true)}
+                onEditNote={() => setIsEdit(true)}
+                isEdit={false}
+                setSelectedNoteIdx={setSelectedNoteIdx}
+              />
+            ))
+          )}
+        </div>
       </div>
-      <div className={styles.grid}>
-        {isLoading ? (
-          <p>Loading...</p>
-        ) : notes.length === 0 ? (
-          <p>No note found</p>
-        ) : (
-          notes.map((note) => (
-            <Note key={note.id} note={note} onDeleteNote={() => setIsNewNote(true)} />
-          ))
-        )}
-      </div>
-    </div>
+    </>
   );
 }
 
-const Note = ({ note, onDeleteNote }: any) => {
+const Note = ({
+  idx,
+  setNotes,
+  note,
+  onDeleteNote,
+  onEditNote,
+  onDoneEditing,
+  isEdit,
+  setSelectedNoteIdx
+}: any) => {
   const router = useRouter();
   const { id, title, content, created } = note || {};
+  const [newNote, setNewNote] = useState<Note>();
+
+  useEffect(() => {
+    setNewNote({ id, title, content });
+  }, [id]);
+
+  const handleOnChange = (e: any) => {
+    setNewNote((previous) => ({
+      ...initialNote,
+      ...previous,
+      [e.target.name]: e.target.value
+    }));
+  };
+
   const handleClickNote = (id: number) => {
     router.push(`/notes/${id}`);
   };
 
+  const handleSeletedNoteToEdit = () => {
+    onEditNote();
+    setSelectedNoteIdx(idx);
+  };
+
+  const updateNotes = () => {
+    setNotes((previous: Note[]) => {
+      const tempNotes = [...previous];
+      tempNotes[idx] = newNote || initialNote;
+      return tempNotes;
+    });
+  };
+
   return (
-    <div onClick={() => handleClickNote(id)} className="click">
+    <div
+      onClick={isEdit ? () => {} : () => handleClickNote(id)}
+      className={`${isEdit ? "" : "click"}`}
+    >
       <div className={styles.note}>
-        <h2>{title}</h2>
+        {isEdit ? (
+          <>
+            <input name="title" value={newNote?.title} onChange={handleOnChange} />
+            <Hr />
+            <textarea rows={5} name="content" value={newNote?.content} onChange={handleOnChange} />
+          </>
+        ) : (
+          <>
+            <h2>{title}</h2>
+            <Hr />
+            <h5>{content}</h5>
+          </>
+        )}
         <Hr />
-        <h5>{content}</h5>
-        <Hr />
-        <ToolBar onDeleteNote={onDeleteNote} id={id} />
+        <ToolBar
+          onDeleteNote={onDeleteNote}
+          id={id}
+          updateNotes={updateNotes}
+          handleSeletedNoteToEdit={handleSeletedNoteToEdit}
+          onDoneEditing={onDoneEditing}
+          isEdit={isEdit}
+          newNote={newNote}
+        />
       </div>
     </div>
   );

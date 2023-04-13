@@ -89,7 +89,7 @@ export const deleteNote = async (noteId: number) => {
   const rowIndex = ids[noteId];
   const googleSheetInstance = await googleSheet();
 
-  const res = await googleSheetInstance.spreadsheets.batchUpdate({
+  await googleSheetInstance.spreadsheets.batchUpdate({
     spreadsheetId,
     requestBody: {
       // request body parameters
@@ -113,6 +113,43 @@ export const deleteNote = async (noteId: number) => {
   //     ranges: [`notes!${7}:${7}`]
   //   }
   // });
+};
+
+export const updateNote = async (noteId: number, body: any) => {
+  console.log(`patch note: ${noteId}`);
+  console.log("body -----> ", body);
+  const ids = await getIds();
+  const rowIndex = ids[noteId];
+  const googleSheetInstance = await googleSheet();
+
+  await googleSheetInstance.spreadsheets.batchUpdate({
+    spreadsheetId,
+    requestBody: {
+      requests: [
+        {
+          updateCells: {
+            rows: [
+              {
+                values: [
+                  {
+                    userEnteredValue: { stringValue: body.id }
+                  },
+                  {
+                    userEnteredValue: { stringValue: body.title }
+                  },
+                  {
+                    userEnteredValue: { stringValue: body.content }
+                  }
+                ]
+              }
+            ],
+            fields: "userEnteredValue",
+            start: { rowIndex } // sheetId: 0, columnIndex: 0 <-- use as offset column
+          }
+        }
+      ]
+    }
+  });
 };
 
 // config sheet --------------------------------------------------------------------------------
