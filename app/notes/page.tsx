@@ -118,6 +118,11 @@ const Note = ({
     });
   };
 
+  const onCancel = () => {
+    onDoneEditing();
+    setNewNote({ id, title, content });
+  };
+
   return (
     <div
       onClick={isEdit ? () => {} : () => handleClickNote(id)}
@@ -144,6 +149,7 @@ const Note = ({
           updateNotes={updateNotes}
           handleSeletedNoteToEdit={handleSeletedNoteToEdit}
           onDoneEditing={onDoneEditing}
+          onCancel={onCancel}
           isEdit={isEdit}
           newNote={newNote}
         />

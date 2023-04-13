@@ -11,6 +11,7 @@ export default function ToolBar({
   updateNotes,
   handleSeletedNoteToEdit,
   onDoneEditing,
+  onCancel,
   isEdit,
   newNote
 }: any) {
@@ -59,7 +60,7 @@ export default function ToolBar({
               <EditModalButton onClick={handleUpdate} color="green">
                 Okay
               </EditModalButton>
-              <EditModalButton onClick={onDoneEditing} color="red">
+              <EditModalButton onClick={onCancel} color="red">
                 Cancel
               </EditModalButton>
             </div>
