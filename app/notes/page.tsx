@@ -82,6 +82,22 @@ const Note = ({
 }: any) => {
   const router = useRouter();
   const { id, title, content, created } = note || {};
+  const [newNote, setNewNote] = useState<Note>();
+
+  useEffect(() => {
+    setNewNote({ id, title, content });
+  }, [id]);
+
+  const handleOnChange = (e: any) => {
+    setNewNote((previous) => ({
+      id: "initial",
+      title: "",
+      content: "",
+      ...previous,
+      [e.target.name]: e.target.value
+    }));
+  };
+
   const handleClickNote = (id: number) => {
     router.push(`/notes/${id}`);
   };
@@ -97,9 +113,19 @@ const Note = ({
       className={`${isEdit ? "" : "click"}`}
     >
       <div className={styles.note}>
-        <h2>{title}</h2>
-        <Hr />
-        <h5>{content}</h5>
+        {isEdit ? (
+          <>
+            <input name="title" value={newNote?.title} onChange={handleOnChange} />
+            <Hr />
+            <textarea rows={5} name="content" value={newNote?.content} onChange={handleOnChange} />
+          </>
+        ) : (
+          <>
+            <h2>{title}</h2>
+            <Hr />
+            <h5>{content}</h5>
+          </>
+        )}
         <Hr />
         <ToolBar
           onDeleteNote={onDeleteNote}
@@ -107,6 +133,7 @@ const Note = ({
           handleSeletedNoteToEdit={handleSeletedNoteToEdit}
           onDoneEditing={onDoneEditing}
           isEdit={isEdit}
+          newNote={newNote}
         />
       </div>
     </div>
